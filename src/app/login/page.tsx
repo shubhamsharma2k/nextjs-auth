@@ -16,21 +16,25 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    try {
-      setLoading(true);
-      const resp = await axios.post("/api/users/login", user);
-      if (resp.status === 200) {
-        router.push("/profile");
-        console.log(resp.data)
-      } else {
-        toast.error("Error");
+    if (user.email && user.password) {
+      try {
+        setLoading(true);
+        const resp = await axios.post("/api/users/login", user);
+        if (resp.status === 200) {
+          router.push("/profile");
+          console.log(resp.data);
+        } else {
+          toast.error("Error");
+        }
+        setLoading(false);
+      } catch (error: any) {
+        toast.error(error.message);
+        setLoading(false);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    } catch (error: any) {
-      toast.error(error.message);
-      setLoading(false);
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("Please enter email and password");
     }
   };
 
@@ -44,28 +48,31 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>Login</h1>
-      <hr />
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        type="text"
-        value={user.email}
-        onChange={(e) => setUser({ ...user, email: e.target.value })}
-        placeholder="Email"
-        className="text-black"
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        type="text"
-        value={user.password}
-        onChange={(e) => setUser({ ...user, password: e.target.value })}
-        placeholder="Password"
-        className="text-black"
-      />
+      <div>
+        <p>Email</p>
+        <input
+          id="email"
+          type="text"
+          value={user.email}
+          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          placeholder="Email"
+          className="text-black p-2"
+        />
+      </div>
+      <div className="m-4">
+        <p>Password</p>
+        <input
+          id="password"
+          type="text"
+          value={user.password}
+          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          placeholder="Password"
+          className="text-black p-2"
+        />
+      </div>
       <button
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        type="button"
+        className="bg-indigo-600 px-3 py-2 rounded"
         onClick={submit}
       >
         Submit
